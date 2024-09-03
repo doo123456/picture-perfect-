@@ -14,28 +14,30 @@
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
-            padding: 20px;
+            padding: 10px;
             box-sizing: border-box;
         }
         h1 {
             color: #FF4500;
             text-align: center;
+            font-size: 24px;
         }
         #game-board {
             display: grid;
-            grid-template-columns: repeat(3, 100px);
+            grid-template-columns: repeat(3, 1fr);
             grid-gap: 10px;
             margin-top: 20px;
-            max-width: 500px;
+            max-width: 300px; /* Reduced max width for smaller screens */
             width: 100%;
         }
         .card {
-            width: 100px;
-            height: 100px;
+            width: 100%;
+            padding-bottom: 100%; /* Maintain square aspect ratio */
+            position: relative;
             perspective: 1000px;
         }
         .card-inner {
-            position: relative;
+            position: absolute;
             width: 100%;
             height: 100%;
             text-align: center;
@@ -55,7 +57,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 36px;
+            font-size: 20px; /* Reduced font size for smaller screens */
         }
         .card-front {
             background-color: #FFD700;
@@ -66,7 +68,7 @@
         }
         #result, #code {
             margin-top: 20px;
-            font-size: 18px;
+            font-size: 16px; /* Reduced font size for smaller screens */
             color: #FF4500;
             text-align: center;
         }
@@ -100,7 +102,7 @@
 
         function createBoard() {
             shuffle(images);
-            images.forEach((image, index) => {
+            images.forEach((image) => {
                 const card = document.createElement('div');
                 card.classList.add('card');
                 card.innerHTML = `
@@ -134,7 +136,7 @@
             if (isMatch) {
                 disableCards();
                 matchedPairs++;
-                if (matchedPairs === 3) {
+                if (matchedPairs === 3) {  // Ensure the game is won only after all 3 pairs are matched
                     revealCode();
                 }
             } else {
