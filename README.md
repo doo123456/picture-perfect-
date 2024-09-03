@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,22 +13,29 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
             padding: 10px;
             box-sizing: border-box;
+            background-image: url('burrito-background.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white; /* Set text color to white for better contrast */
         }
         h1 {
-            color: #FF4500;
+            color: #FFD700; /* Adjusted to stand out against the background */
             text-align: center;
             font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for better readability */
         }
         #game-board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-gap: 10px;
             margin-top: 20px;
-            max-width: 300px; /* Reduced max width for smaller screens */
+            max-width: 300px;
             width: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for the game area */
+            padding: 10px;
+            border-radius: 10px;
         }
         .card {
             width: 100%;
@@ -56,19 +64,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 20px; /* Reduced font size for smaller screens */
-        }
-        .card-front {
-            background-color: #FFD700;
+            font-size: 20px;
+            background-color: white; /* Ensure cards stand out against the background */
+            color: #282c34;
         }
         .card-back {
-            background-color: #4CAF50;
+            background-color: #FFD700;
             transform: rotateY(180deg);
         }
-        #result, #code, #attempts-info {
+        #result, #code {
             margin-top: 20px;
-            font-size: 16px; /* Reduced font size for smaller screens */
-            color: #FF4500;
+            font-size: 16px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #FFD700;
             text-align: center;
         }
         #code {
@@ -78,8 +86,7 @@
 </head>
 <body>
 
-    <h1>Match a Pair and Win!</h1>
-    <div id="attempts-info"></div>
+    <h1>Match the Pairs and Win!</h1>
     <div id="game-board"></div>
     <div id="result"></div>
     <div id="code"></div>
@@ -89,48 +96,12 @@
 
         let hasFlippedCard = false;
         let firstCard, secondCard;
+        let matchedPairs = 0;
         let attempts = 0;
         const maxAttempts = 2;
         const gameBoard = document.getElementById('game-board');
         const resultDisplay = document.getElementById('result');
         const codeDisplay = document.getElementById('code');
-        const attemptsInfo = document.getElementById('attempts-info');
-
-        // Function to get today's date as a string
-        function getTodayDate() {
-            return new Date().toISOString().split('T')[0];
-        }
-
-        // Function to check and update attempts
-        function checkAttempts() {
-            const today = getTodayDate(); // Get today's date in YYYY-MM-DD format
-            const lastAttemptDate = localStorage.getItem('lastAttemptDate');
-            const storedAttempts = localStorage.getItem('attempts') || 0;
-
-            if (lastAttemptDate !== today) {
-                // Reset attempts if the last attempt was on a different day
-                localStorage.setItem('attempts', 0);
-                localStorage.setItem('lastAttemptDate', today);
-                attempts = 0;
-            } else {
-                attempts = parseInt(storedAttempts);
-            }
-
-            attemptsInfo.textContent = `Attempts today: ${attempts}/${maxAttempts}`;
-
-            if (attempts >= maxAttempts) {
-                resultDisplay.textContent = "You've reached the maximum attempts for today. Please try again tomorrow.";
-                disableBoard();
-                return false;
-            }
-            return true;
-        }
-
-        function updateAttempts() {
-            attempts++;
-            localStorage.setItem('attempts', attempts);
-            attemptsInfo.textContent = `Attempts today: ${attempts}/${maxAttempts}`;
-        }
 
         function shuffle(array) {
             array.sort(() => Math.random() - 0.5);
@@ -171,13 +142,16 @@
 
             if (isMatch) {
                 disableCards();
-                revealCode();  // Win immediately after matching one pair
+                matchedPairs++;
+                if (matchedPairs === 3) {  // Ensure the game is won only after all 3 pairs are matched
+                    revealCode();
+                }
             } else {
                 unflipCards();
-                updateAttempts();
-                if (attempts >= maxAttempts) {
-                    endGame();
-                }
+            }
+            updateAttempts();
+            if (attempts >= maxAttempts && matchedPairs < 3) {
+                endGame();
             }
         }
 
@@ -214,9 +188,15 @@
             cards.forEach(card => card.removeEventListener('click', flipCard));
         }
 
-        if (checkAttempts()) {
-            createBoard();
+        function checkAttempts() {
+            return true; // For testing, allow unlimited attempts. Adjust this as needed.
         }
+
+        function updateAttempts() {
+            attempts++; // For testing, track attempts. Adjust this as needed.
+        }
+
+        createBoard();
     </script>
 
 </body>
