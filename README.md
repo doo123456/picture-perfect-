@@ -166,5 +166,5 @@
         createBoard();
     </script>
 
-</body>
+</body> 
 </html>
