@@ -6,7 +6,7 @@
     <title>Memory Matching Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -15,34 +15,41 @@
             margin: 0;
             padding: 10px;
             box-sizing: border-box;
-            background-image: url('burrito-background.jpg');
+            background-image: url('Listo_SM+Post_Logo-annimation.gif');
             background-size: cover;
             background-position: center;
-            color: white; /* Set text color to white for better contrast */
+            color: white;
         }
+
         h1 {
-            color: #FFD700; /* Adjusted to stand out against the background */
+            color: #FFD700;
             text-align: center;
-            font-size: 24px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for better readability */
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 20px;
         }
+
         #game-board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            grid-gap: 10px;
+            grid-gap: 15px;
             margin-top: 20px;
-            max-width: 300px;
+            max-width: 350px;
             width: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for the game area */
-            padding: 10px;
-            border-radius: 10px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background for the game area */
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
         }
+
         .card {
             width: 100%;
             padding-bottom: 100%; /* Maintain square aspect ratio */
             position: relative;
             perspective: 1000px;
+            border-radius: 15px;
         }
+
         .card-inner {
             position: absolute;
             width: 100%;
@@ -51,36 +58,56 @@
             transition: transform 0.6s;
             transform-style: preserve-3d;
             cursor: pointer;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
+
         .card.flipped .card-inner {
             transform: rotateY(180deg);
         }
+
         .card-front, .card-back {
             position: absolute;
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 20px;
-            background-color: white; /* Ensure cards stand out against the background */
+            font-size: 24px;
+            border-radius: 15px;
+        }
+
+        .card-front {
+            background-color: #ffffff;
             color: #282c34;
         }
+
         .card-back {
             background-color: #FFD700;
+            color: #282c34;
             transform: rotateY(180deg);
         }
+
         #result, #code {
             margin-top: 20px;
-            font-size: 16px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
             color: #FFD700;
             text-align: center;
         }
+
         #code {
             color: green;
+        }
+
+        /* Optional: Adding the burrito image as a footer or header */
+        #burrito-image {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
@@ -90,6 +117,9 @@
     <div id="game-board"></div>
     <div id="result"></div>
     <div id="code"></div>
+
+    <!-- Burrito Image Footer -->
+    <img id="burrito-image" src="Listo_Home_H_Burrito-8.jpg" alt="Listo Burrito">
 
     <script>
         const images = ['🍎', '🍌', '🍇', '🍎', '🍌', '🍇'];
