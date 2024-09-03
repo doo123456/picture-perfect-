@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -66,7 +65,7 @@
             background-color: #4CAF50;
             transform: rotateY(180deg);
         }
-        #result, #code {
+        #result, #code, #attempts-info {
             margin-top: 20px;
             font-size: 16px; /* Reduced font size for smaller screens */
             color: #FF4500;
@@ -79,7 +78,8 @@
 </head>
 <body>
 
-    <h1>Match the Pairs and Win!</h1>
+    <h1>Match a Pair and Win!</h1>
+    <div id="attempts-info"></div>
     <div id="game-board"></div>
     <div id="result"></div>
     <div id="code"></div>
@@ -89,12 +89,48 @@
 
         let hasFlippedCard = false;
         let firstCard, secondCard;
-        let matchedPairs = 0;
         let attempts = 0;
         const maxAttempts = 2;
         const gameBoard = document.getElementById('game-board');
         const resultDisplay = document.getElementById('result');
         const codeDisplay = document.getElementById('code');
+        const attemptsInfo = document.getElementById('attempts-info');
+
+        // Function to get today's date as a string
+        function getTodayDate() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        // Function to check and update attempts
+        function checkAttempts() {
+            const today = getTodayDate(); // Get today's date in YYYY-MM-DD format
+            const lastAttemptDate = localStorage.getItem('lastAttemptDate');
+            const storedAttempts = localStorage.getItem('attempts') || 0;
+
+            if (lastAttemptDate !== today) {
+                // Reset attempts if the last attempt was on a different day
+                localStorage.setItem('attempts', 0);
+                localStorage.setItem('lastAttemptDate', today);
+                attempts = 0;
+            } else {
+                attempts = parseInt(storedAttempts);
+            }
+
+            attemptsInfo.textContent = `Attempts today: ${attempts}/${maxAttempts}`;
+
+            if (attempts >= maxAttempts) {
+                resultDisplay.textContent = "You've reached the maximum attempts for today. Please try again tomorrow.";
+                disableBoard();
+                return false;
+            }
+            return true;
+        }
+
+        function updateAttempts() {
+            attempts++;
+            localStorage.setItem('attempts', attempts);
+            attemptsInfo.textContent = `Attempts today: ${attempts}/${maxAttempts}`;
+        }
 
         function shuffle(array) {
             array.sort(() => Math.random() - 0.5);
@@ -135,16 +171,13 @@
 
             if (isMatch) {
                 disableCards();
-                matchedPairs++;
-                if (matchedPairs === 3) {  // Ensure the game is won only after all 3 pairs are matched
-                    revealCode();
-                }
+                revealCode();  // Win immediately after matching one pair
             } else {
                 unflipCards();
-            }
-            updateAttempts();
-            if (attempts >= maxAttempts && matchedPairs < 3) {
-                endGame();
+                updateAttempts();
+                if (attempts >= maxAttempts) {
+                    endGame();
+                }
             }
         }
 
@@ -181,15 +214,9 @@
             cards.forEach(card => card.removeEventListener('click', flipCard));
         }
 
-        function checkAttempts() {
-            return true; // For testing, allow unlimited attempts. Adjust this as needed.
+        if (checkAttempts()) {
+            createBoard();
         }
-
-        function updateAttempts() {
-            attempts++; // For testing, track attempts. Adjust this as needed.
-        }
-
-        createBoard();
     </script>
 
 </body>
