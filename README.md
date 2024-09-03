@@ -22,26 +22,42 @@
             display: grid;
             grid-template-columns: repeat(5, 100px);
             grid-gap: 10px;
+            margin-top: 20px;
         }
         .card {
             width: 100px;
             height: 100px;
-            background-color: #FFD700;
+            perspective: 1000px;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 36px;
-            cursor: pointer;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .card img {
-            width: 80%;
-            height: 80%;
-            display: none;
+        .card-front {
+            background-color: #FFD700;
         }
-        .matched img {
-            display: block;
+        .card-back {
+            background-color: #4CAF50;
+            transform: rotateY(180deg);
         }
         #result {
             margin-top: 20px;
@@ -76,7 +92,7 @@
         let firstCard, secondCard;
         let matchedPairs = 0;
         let attempts = 0;
-        const maxAttempts = 5;
+        const maxAttempts = 2;
         const gameBoard = document.getElementById('game-board');
         const resultDisplay = document.getElementById('result');
         const codeDisplay = document.getElementById('code');
@@ -90,8 +106,12 @@
             images.forEach((image, index) => {
                 const card = document.createElement('div');
                 card.classList.add('card');
-                card.setAttribute('data-image', image);
-                card.innerHTML = `<span>${image}</span>`;
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">?</div>
+                        <div class="card-back">${image}</div>
+                    </div>
+                `;
                 card.addEventListener('click', flipCard);
                 gameBoard.appendChild(card);
             });
@@ -100,7 +120,6 @@
         function flipCard() {
             if (this === firstCard) return;
             this.classList.add('flipped');
-            this.querySelector('span').style.display = 'block';
 
             if (!hasFlippedCard) {
                 hasFlippedCard = true;
@@ -113,7 +132,7 @@
         }
 
         function checkForMatch() {
-            let isMatch = firstCard.dataset.image === secondCard.dataset.image;
+            let isMatch = firstCard.querySelector('.card-back').textContent === secondCard.querySelector('.card-back').textContent;
 
             if (isMatch) {
                 disableCards();
@@ -133,8 +152,6 @@
         function disableCards() {
             firstCard.removeEventListener('click', flipCard);
             secondCard.removeEventListener('click', flipCard);
-            firstCard.classList.add('matched');
-            secondCard.classList.add('matched');
             resetBoard();
         }
 
@@ -142,8 +159,6 @@
             setTimeout(() => {
                 firstCard.classList.remove('flipped');
                 secondCard.classList.remove('flipped');
-                firstCard.querySelector('span').style.display = 'none';
-                secondCard.querySelector('span').style.display = 'none';
                 resetBoard();
             }, 1000);
         }
@@ -153,7 +168,7 @@
         }
 
         function revealCode() {
-            codeDisplay.textContent = "Congratulations! Use code 'LISTO122' for 20% off!";
+            codeDisplay.textContent = "Congratulations! Use code 'LISTO29' for 20% off!";
         }
 
         function endGame() {
@@ -166,5 +181,5 @@
         createBoard();
     </script>
 
-</body> 
+</body>
 </html>
