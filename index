@@ -14,15 +14,20 @@
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+            padding: 20px;
+            box-sizing: border-box;
         }
         h1 {
             color: #FF4500;
+            text-align: center;
         }
         #game-board {
             display: grid;
-            grid-template-columns: repeat(5, 100px);
+            grid-template-columns: repeat(3, 100px);
             grid-gap: 10px;
             margin-top: 20px;
+            max-width: 500px;
+            width: 100%;
         }
         .card {
             width: 100px;
@@ -59,14 +64,13 @@
             background-color: #4CAF50;
             transform: rotateY(180deg);
         }
-        #result {
+        #result, #code {
             margin-top: 20px;
-            font-size: 24px;
+            font-size: 18px;
             color: #FF4500;
+            text-align: center;
         }
         #code {
-            margin-top: 10px;
-            font-size: 20px;
             color: green;
         }
     </style>
@@ -79,14 +83,7 @@
     <div id="code"></div>
 
     <script>
-        const images = [
-            '🍎', '🍌', '🍇', '🍉', '🍊',
-            '🍎', '🍌', '🍇', '🍉', '🍊',
-            '🐶', '🐱', '🐭', '🐹', '🐰',
-            '🐶', '🐱', '🐭', '🐹', '🐰',
-            '🚗', '🚕', '🚙', '🚌', '🚓',
-            '🚗', '🚕', '🚙', '🚌', '🚓',
-        ];
+        const images = ['🍎', '🍌', '🍇', '🍎', '🍌', '🍇'];
 
         let hasFlippedCard = false;
         let firstCard, secondCard;
@@ -118,7 +115,7 @@
         }
 
         function flipCard() {
-            if (this === firstCard) return;
+            if (this === firstCard || !checkAttempts()) return;
             this.classList.add('flipped');
 
             if (!hasFlippedCard) {
@@ -137,14 +134,14 @@
             if (isMatch) {
                 disableCards();
                 matchedPairs++;
-                if (matchedPairs === 5) {
+                if (matchedPairs === 3) {
                     revealCode();
                 }
             } else {
                 unflipCards();
             }
-            attempts++;
-            if (attempts >= maxAttempts && matchedPairs < 5) {
+            updateAttempts();
+            if (attempts >= maxAttempts && matchedPairs < 3) {
                 endGame();
             }
         }
@@ -169,13 +166,25 @@
 
         function revealCode() {
             codeDisplay.textContent = "Congratulations! Use code 'LISTO29' for 20% off!";
+            disableBoard();
         }
 
         function endGame() {
             resultDisplay.textContent = "Game over! Try again in 24 hours!";
-            gameBoard.classList.add('disabled');
+            disableBoard();
+        }
+
+        function disableBoard() {
             const cards = document.querySelectorAll('.card');
             cards.forEach(card => card.removeEventListener('click', flipCard));
+        }
+
+        function checkAttempts() {
+            return true; // For testing, allow unlimited attempts. Adjust this as needed.
+        }
+
+        function updateAttempts() {
+            attempts++; // For testing, track attempts. Adjust this as needed.
         }
 
         createBoard();
@@ -183,3 +192,4 @@
 
 </body>
 </html>
+
